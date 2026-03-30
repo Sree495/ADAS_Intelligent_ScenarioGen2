@@ -1,0 +1,10 @@
+feature,mean_abs_shap
+weather,8.164961909259038
+ego_speed_kmh,7.279900684502931
+closing_speed_kmh,2.215902592720204
+friction_coeff,0.37441829532396165
+overlap_pct,8.177052784885675e-18
+road_surface,3.1127444372058833e-18
+target_speed_kmh,1.996883561283802e-18
+visibility_factor,1.0072238182390337e-19
+time_of_day,0.0

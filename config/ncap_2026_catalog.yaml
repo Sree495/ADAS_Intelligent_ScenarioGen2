@@ -1,0 +1,119 @@
+# Euro NCAP 2026 AEB Scenario Catalog
+# Source: Euro NCAP Test Protocol - Crash Avoidance Frontal Collisions, v1.1, Oct 2025
+# Reference: https://www.euroncap.com/en/for-engineers/protocols/2026-protocols/
+
+catalog_version: "2026.1.1"
+protocol: "Euro NCAP AEB Car-to-Car + VRU"
+
+# ── Scenario families ─────────────────────────────────────────────
+scenarios:
+
+  CCRs:
+    name: "Car-to-Car Rear stationary"
+    description: "Ego approaches stationary target vehicle"
+    target_type: car
+    target_motion: stationary
+    ego_speeds_kmh: [20, 30, 40, 50, 60, 70, 80, 90, 100]
+    overlap_pct: [50, 75, 100]
+    ncap_weight: 1.0
+
+  CCRm:
+    name: "Car-to-Car Rear moving"
+    description: "Ego approaches slower-moving target vehicle"
+    target_type: car
+    target_motion: moving
+    target_speeds_kmh: [20]
+    ego_speeds_kmh: [30, 40, 50, 60, 70, 80, 90, 100]
+    overlap_pct: [50, 75, 100]
+    ncap_weight: 1.0
+
+  CCRb:
+    name: "Car-to-Car Rear braking"
+    description: "Target brakes in front of ego"
+    target_type: car
+    target_motion: braking
+    initial_target_speeds_kmh: [50]
+    ego_speeds_kmh: [50, 60, 70, 80, 90, 100]
+    overlap_pct: [50, 75, 100]
+    ncap_weight: 1.0
+
+  CCFhos:
+    name: "Car-to-Car Front Head-On Straight"
+    description: "Head-on collision on straight road"
+    target_type: car
+    target_motion: oncoming
+    closing_speeds_kmh: [60, 80, 100, 120, 140]
+    pass_criteria: "reduce_collision_speed_kmh >= 20"
+    ncap_weight: 1.5
+
+  CCFhol:
+    name: "Car-to-Car Front Head-On Lane Change"
+    description: "Head-on after lane change manoeuvre"
+    target_type: car
+    target_motion: oncoming_lane_change
+    closing_speeds_kmh: [60, 80, 100]
+    pass_criteria: "reduce_collision_speed_kmh >= 20"
+    ncap_weight: 1.5
+
+  CPNCO:
+    name: "Car-to-Pedestrian Nearside Child Obstructed"
+    description: "Child pedestrian crossing from nearside, partially obstructed"
+    target_type: pedestrian_child
+    target_motion: crossing
+    ego_speeds_kmh: [20, 30, 40]
+    approach_angle_deg: [90]
+    ncap_weight: 1.2
+
+  CPNA:
+    name: "Car-to-Pedestrian Nearside Adult"
+    description: "Adult pedestrian crossing nearside"
+    target_type: pedestrian_adult
+    target_motion: crossing
+    ego_speeds_kmh: [20, 30, 40, 50, 60]
+    approach_angle_deg: [90]
+    ncap_weight: 1.2
+
+  CPFA:
+    name: "Car-to-Pedestrian Farside Adult"
+    description: "Adult pedestrian crossing farside"
+    target_type: pedestrian_adult
+    target_motion: crossing
+    ego_speeds_kmh: [20, 30, 40, 50]
+    approach_angle_deg: [90]
+    ncap_weight: 1.0
+
+  CBNA:
+    name: "Car-to-Bicyclist Nearside Adult"
+    description: "Bicyclist crossing from nearside"
+    target_type: cyclist
+    target_motion: crossing
+    ego_speeds_kmh: [20, 30, 40, 50]
+    target_speed_kmh: 15
+    ncap_weight: 1.0
+
+# ── Robustness variation parameters ──────────────────────────────
+robustness_variations:
+  speed_delta_kmh: [-10, -5, 0, +5, +10]
+  overlap_delta_pct: [-25, 0, +25]
+  weather: [dry, wet, fog_light, fog_dense, snow]
+  time_of_day: [day, dusk, night]
+  road_surface: [asphalt_dry, asphalt_wet, concrete]
+
+# ── Scoring ───────────────────────────────────────────────────────
+scoring:
+  points_per_scenario:
+    collision: 0
+    late_intervention: 1     # TTC at intervention > threshold
+    adequate_intervention: 2  # TTC within limits, speed reduced
+    good_intervention: 3      # Significant speed reduction
+    full_avoidance: 4         # No collision, full stop or pass
+  pass_threshold_points: 2.0
+  critical_threshold_points: 1.5
+
+# ── SUMO simulation parameters ───────────────────────────────────
+simulation:
+  timestep_s: 0.1
+  max_duration_s: 30.0
+  road_length_m: 500
+  lane_width_m: 3.5
+  warm_up_distance_m: 200    # distance before scenario start point

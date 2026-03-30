@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+data/results/results.db
+data/models/*.joblib
+data/models/*.pkl
+*.net.xml
+*.rou.xml
+*.fcd.xml
+*.view.xml
+data/scenarios/
+.env
+.DS_Store
+Thumbs.db

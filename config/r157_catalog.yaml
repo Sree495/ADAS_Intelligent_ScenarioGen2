@@ -1,0 +1,45 @@
+# UNECE R157 ALKS Scenario Catalog
+# Source: UN Regulation No. 157 - Automated Lane Keeping Systems
+# ODD: Highway, max 60 km/h, lane markings present
+
+catalog_version: "R157.Rev1"
+protocol: "UNECE R157 ALKS"
+odd_max_speed_kmh: 60
+odd_road_type: highway
+
+scenarios:
+
+  ALKS_CutIn:
+    name: "Cut-in by adjacent vehicle"
+    description: "Adjacent lane vehicle cuts into ego lane"
+    ego_speeds_kmh: [40, 50, 60]
+    target_speeds_kmh: [30, 40, 50]
+    lateral_offset_m: [3.5]
+    time_to_cut_s: [2.0, 3.0, 4.0]
+    pass_criteria: "no_collision AND lane_maintained"
+
+  ALKS_SlowLead:
+    name: "Slow lead vehicle"
+    description: "Lead vehicle decelerates suddenly"
+    ego_speeds_kmh: [50, 60]
+    lead_decel_ms2: [3.0, 5.0, 8.0]
+    initial_gap_m: [20, 30, 50]
+    pass_criteria: "no_collision AND ttc_intervention < 1.5s"
+
+  ALKS_Stationary:
+    name: "Stationary obstacle"
+    description: "Stationary vehicle or obstacle in lane"
+    ego_speeds_kmh: [40, 50, 60]
+    obstacle_types: [vehicle, debris]
+    pass_criteria: "no_collision"
+
+  ALKS_LaneMarking:
+    name: "Degraded lane marking"
+    description: "Faded or obscured lane markings"
+    ego_speeds_kmh: [50, 60]
+    marking_visibility_pct: [100, 70, 50, 30]
+    pass_criteria: "system_warns_driver OR lane_maintained"
+
+scoring:
+  pass_criteria: binary  # R157 is pass/fail, not points-based
+  critical_events: [collision, unintended_lane_departure, no_intervention]
