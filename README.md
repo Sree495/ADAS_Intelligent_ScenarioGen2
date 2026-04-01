@@ -186,27 +186,6 @@ streamlit run src/dashboard/app.py
 
 ---
 
-## Who should reach out
-
-**Tier-1 ADAS suppliers** (Bosch, Continental, ZF, Mobileye, Aptiv)
-- Every ECU flash needs regression validation. This reduces that from 2,000 runs to ~450.
-- The bandit catches regressions your fixed test suite never covers.
-
-**OEMs** (BMW, Mercedes, VW, Toyota, GM)
-- ISO 21448 SOTIF requires documented evidence of unknown-unknown search.
-- This framework generates that evidence automatically.
-- NCAP pass ≠ recall immunity. This bridges the gap.
-
-**Test tool vendors** (dSPACE, AVL, IPG, Ansys)
-- This is an AI intelligence layer that sits on top of your simulator.
-- Bring the physics. We bring the test selection and novelty discovery.
-
-**Research & homologation labs**
-- Reproducible, regulation-mapped scenario generation with full audit trail.
-- OpenSCENARIO export path ready for standardisation.
-
----
-
 ## Roadmap: next version
 
 The current POC validates the three-phase pipeline concept. The natural next step
