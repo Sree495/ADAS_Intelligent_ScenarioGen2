@@ -82,17 +82,22 @@ v3 produces silence. The framework correctly finds nothing on a clean release.
 
 ---
 
-## The gap no existing tool fills
+## Where this fits in the existing landscape
 
-| Capability | Foretellix | AVL SCENIUS | dSPACE | IPG CarMaker | This framework |
-|---|:---:|:---:|:---:|:---:|:---:|
-| NCAP family coverage guarantee | ~ | ~ | ~ | ~ | ✓ |
-| ML-guided test suite reduction | ✗ | ✗ | ✗ | ✗ | ✓ |
-| Cross-version regression intelligence | ✗ | ✗ | ✗ | ✗ | ✓ |
-| SOTIF unknown-unknown targeting | ✗ | ✗ | ✗ | ✗ | ✓ |
-| Root-cause explainability (SHAP) | ✗ | ✗ | ✗ | ✗ | ✓ |
-| ISO 21448 artefact generation | ✗ | ✗ | ✗ | ✗ | ✓ |
-| CPU-only, no cloud dependency |: | ✗ | ✗ | ✗ | ✓ |
+Established tools (Foretellix, AVL SCENIUS, dSPACE, IPG CarMaker) are strong at
+high-fidelity simulation, sensor modelling, and regulation compliance workflows.
+This framework is not a replacement for those — it is designed to sit alongside them
+as an AI intelligence layer for test selection and regression analysis.
+
+The specific combination not publicly documented in existing tools:
+
+| Capability | Status in market | This framework |
+|---|---|:---:|
+| Parametric scenario variation + NCAP labelling | Available in most tools | ✓ |
+| ML criticality ranking to reduce test budget | Not publicly documented | ✓ |
+| Cross-version regression via shared ML prior | Not publicly documented | ✓ |
+| Adaptive bandit for SOTIF unknown-unknown search | Research stage only | ✓ (POC) |
+| SHAP root-cause feature importance | Not in test tools | ✓ |
 
 ---
 
