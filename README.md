@@ -222,52 +222,18 @@ Only the parameter space and arm definitions are updated.
 
 ## Honest limitations of this POC
 
-This project demonstrates a methodology. It is not a production tool. The limitations
-below are known and intentional given the POC scope.
+This demonstrates a methodology, not a production tool.
 
-**1. Weather is not real physics**
-SUMO does not simulate sensor degradation, visibility, or tyre friction from weather.
-Weather in this POC is a friction coefficient multiplier applied manually inside the
-SUT controller. The failure boundary is real; the cause is synthetic. A production
-version would connect to a sensor simulation layer (dSPACE AURELION, AVL SENSORS,
-or IPG CarMaker environment model).
-
-**2. SUT is a parametric rule-based model, not a real ECU**
-The three SUT versions (v1/v2/v3) simulate bug behaviour by adjusting internal
-parameters to produce realistic failure rates. They do not replicate a specific
-production AEB stack. The integration interface (SUTController.step()) is designed
-for FMI 2.0 co-simulation with a real V-ECU, but that path has not been validated
-end-to-end in this POC.
-
-**3. 25-arm bandit is coarse**
-The 5 speed x 5 weather arm structure identifies which region fails, not the exact
-failure threshold. The precise boundary (e.g. "fails at ego >= 53.2 km/h") requires
-Bayesian Optimisation within each arm, a natural Phase 4 extension already designed.
-
-**4. Single-scenario simulation, no traffic**
-All scenarios are ego + one target vehicle on a straight 500m road. Real-world
-failures often involve cut-ins, dense traffic, or curved roads. The SUMO network
-generator supports these; they are not yet included in the scenario catalog.
-
-**5. No sensor model**
-Camera, radar, and LiDAR are not modelled. The SUT receives ground-truth distance
-and speed from SUMO via TraCI. Sensor noise, occlusion, and misdetection are absent,
-which limits applicability to perception-dependent failure modes.
-
-**6. No HIL validation**
-The pipeline runs entirely in software simulation (SIL). Hardware-in-the-loop
-validation against a real ECU on a test bench has not been performed. The FMI 2.0
-integration point is pre-wired but untested with physical hardware.
-
-**7. NCAP scoring is simplified**
-Speed reduction thresholds match the Euro NCAP 2026 AEB C2C protocol, but partial
-credit for late interventions and full VRU scenario scoring is not completely
-implemented.
-
-**8. Fixed random seed**
-Scenario generation uses seed=42 so all SUT versions run identical parameter
-combinations. This is intentional for valid regression comparison, but means the
-2,000-scenario pool does not fully explore the tails of the parameter space.
+| # | Limitation | Impact |
+|---|---|---|
+| 1 | Weather is a friction multiplier, not real sensor physics | Failure boundary is real; root cause is synthetic |
+| 2 | SUT is parametric rule-based, not a real ECU | FMI 2.0 interface pre-wired but untested with physical hardware |
+| 3 | 25-arm bandit identifies which region fails, not the exact threshold | Bayesian Optimisation within each arm is the planned next step |
+| 4 | Single ego + one target on a straight road, no traffic | Cut-ins, curves, and traffic density not yet in catalog |
+| 5 | No sensor model (camera / radar / LiDAR) | SUT receives ground-truth distance from SUMO, no noise or occlusion |
+| 6 | SIL only, no HIL validation | Pipeline not tested against a real ECU on a test bench |
+| 7 | NCAP scoring simplified | Partial-credit and full VRU scoring not completely implemented |
+| 8 | Fixed seed=42 across all SUT versions | Valid for regression comparison; tails of parameter space undersampled |
 
 ---
 
