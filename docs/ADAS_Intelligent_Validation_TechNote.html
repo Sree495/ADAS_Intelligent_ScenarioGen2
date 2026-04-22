@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ADAS Intelligent Scenario Validation - Technical Note</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.65;
+    color: #1a1a2e;
+    background: white;
+    padding: 0;
+  }
+
+  /* ---- Cover ---- */
+  .cover {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+    color: white;
+    padding: 72px 64px 60px;
+    min-height: 260px;
+    page-break-after: always;
+  }
+  .cover-tag {
+    font-size: 8pt;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #E2A500;
+    margin-bottom: 20px;
+  }
+  .cover h1 {
+    font-size: 26pt;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 14px;
+  }
+  .cover-sub {
+    font-size: 12pt;
+    font-weight: 300;
+    color: #a0b4cc;
+    margin-bottom: 36px;
+    max-width: 580px;
+  }
+  .cover-meta {
+    display: flex;
+    gap: 40px;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    font-size: 9pt;
+    color: #7a9bb5;
+  }
+  .cover-meta span b { color: white; display: block; font-size: 10pt; margin-bottom: 2px; }
+
+  .kpi-row {
+    display: flex;
+    gap: 0;
+    background: #f0f4f8;
+    border-radius: 0;
+    margin: 0 0 0 0;
+    padding: 20px 64px;
+    border-bottom: 1px solid #dde3ea;
+  }
+  .kpi {
+    flex: 1;
+    text-align: center;
+    padding: 8px 16px;
+    border-right: 1px solid #d0d8e0;
+  }
+  .kpi:last-child { border-right: none; }
+  .kpi-val { font-size: 22pt; font-weight: 700; color: #1D6FE2; line-height: 1; }
+  .kpi-val.red { color: #E24B4A; }
+  .kpi-val.green { color: #1D9E75; }
+  .kpi-val.orange { color: #E2A500; }
+  .kpi-lbl { font-size: 8pt; color: #667; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ---- Body ---- */
+  .body { padding: 40px 64px; max-width: 900px; margin: 0 auto; }
+
+  h2 {
+    font-size: 14pt;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 36px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #E24B4A;
+    display: inline-block;
+  }
+  h3 {
+    font-size: 11pt;
+    font-weight: 600;
+    color: #1D6FE2;
+    margin: 22px 0 8px;
+  }
+  p { margin-bottom: 10px; color: #2c2c3e; }
+
+  /* ---- Tables ---- */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 9.5pt;
+  }
+  thead tr { background: #1a1a2e; color: white; }
+  thead th { padding: 9px 12px; text-align: left; font-weight: 600; font-size: 9pt; letter-spacing: 0.3px; }
+  tbody tr:nth-child(even) { background: #f6f8fb; }
+  tbody td { padding: 8px 12px; border-bottom: 1px solid #e8ecf0; }
+  tbody tr:hover { background: #eef2f7; }
+  .pass { color: #1D9E75; font-weight: 600; }
+  .fail { color: #E24B4A; font-weight: 600; }
+  .note { color: #888; font-style: italic; }
+
+  /* ---- Callout boxes ---- */
+  .callout {
+    border-left: 4px solid #1D6FE2;
+    background: #f0f5ff;
+    padding: 14px 18px;
+    border-radius: 0 6px 6px 0;
+    margin: 16px 0;
+    font-size: 10pt;
+  }
+  .callout.orange { border-color: #E2A500; background: #fffbf0; }
+  .callout.green  { border-color: #1D9E75; background: #f0fff8; }
+  .callout.red    { border-color: #E24B4A; background: #fff5f5; }
+  .callout b { display: block; margin-bottom: 4px; font-size: 10pt; }
+
+  /* ---- Phase blocks ---- */
+  .phase {
+    border: 1px solid #dde3ea;
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin: 14px 0;
+    background: #fafbfc;
+  }
+  .phase-num {
+    display: inline-block;
+    background: #1a1a2e;
+    color: white;
+    font-size: 8pt;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 12px;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .phase h3 { margin: 4px 0 8px; color: #1a1a2e; }
+
+  /* ---- Limitation table ---- */
+  .lim-table td:first-child { font-weight: 600; width: 28%; }
+  .lim-table td:nth-child(2) { color: #555; width: 42%; }
+  .lim-table td:nth-child(3) { color: #E24B4A; width: 30%; font-style: italic; }
+
+  /* ---- Footer ---- */
+  footer {
+    margin-top: 48px;
+    padding: 20px 64px;
+    background: #f6f8fb;
+    border-top: 1px solid #dde3ea;
+    font-size: 8.5pt;
+    color: #888;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ---- Print ---- */
+  @media print {
+    .cover { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .kpi-row { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    thead tr { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    h2 { page-break-after: avoid; }
+    .phase { page-break-inside: avoid; }
+    table { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ COVER ═══ -->
+<div class="cover">
+  <div class="cover-tag">Technical Note &nbsp;|&nbsp; POC Release v1.0</div>
+  <h1>ADAS Intelligent<br>Scenario Validation</h1>
+  <div class="cover-sub">
+    A three-phase AI-augmented pipeline for L2/L2++ AEB validation:<br>
+    systematic coverage, smart test reduction, and novel failure discovery.
+  </div>
+  <div class="cover-meta">
+    <span><b>Regulation</b>Euro NCAP 2026 AEB C2C</span>
+    <span><b>Standard</b>ISO 21448 SOTIF</span>
+    <span><b>Simulator</b>SUMO 1.18+ (TraCI)</span>
+    <span><b>Date</b>April 2026</span>
+    <span><b>Status</b>Proof of Concept</span>
+  </div>
+</div>
+
+<!-- ═══ KPI STRIP ═══ -->
+<div class="kpi-row">
+  <div class="kpi"><div class="kpi-val red">491</div><div class="kpi-lbl">v1 failures / 2,000</div></div>
+  <div class="kpi"><div class="kpi-val orange">293</div><div class="kpi-lbl">v2 failures / 2,000</div></div>
+  <div class="kpi"><div class="kpi-val green">0</div><div class="kpi-lbl">v3 failures / 2,000</div></div>
+  <div class="kpi"><div class="kpi-val">89.8%</div><div class="kpi-lbl">defect coverage @ 441 scenarios</div></div>
+  <div class="kpi"><div class="kpi-val green">4.5x</div><div class="kpi-lbl">simulation cost reduction</div></div>
+  <div class="kpi"><div class="kpi-val">2</div><div class="kpi-lbl">novel arms (SOTIF unknown-unknowns)</div></div>
+</div>
+
+<!-- ═══ BODY ═══ -->
+<div class="body">
+
+<!-- 1. PROBLEM -->
+<h2>1. Problem Statement</h2>
+<p>
+  Euro NCAP homologation defines a fixed set of approximately 30 test scenarios on dry roads
+  at prescribed speeds. These tests are designed to certify a system, not to find where it fails.
+  In practice, AEB software regressions frequently occur in parameter regions outside the
+  homologation envelope: different weather conditions, unusual closing speeds, or edge-case
+  overlaps that no fixed test plan anticipates.
+</p>
+<div class="callout red">
+  <b>Core observation</b>
+  In this POC, NCAP homologation fixed test points found <b>0 failures</b> on a SUT with a
+  24.6% field failure rate. Certification and real-world safety coverage are not the same problem.
+</div>
+<p>
+  Two questions motivate this framework:
+</p>
+<ol style="margin:8px 0 12px 24px;">
+  <li style="margin-bottom:6px"><b>Efficiency:</b> Given 2,000 candidate scenarios, which subset finds the most failures with the least simulation budget?</li>
+  <li style="margin-bottom:6px"><b>SOTIF coverage:</b> When a new software release introduces a failure mode that was never in the training data, how is it discovered before it reaches the field?</li>
+</ol>
+
+
+<!-- 2. PIPELINE -->
+<h2>2. Three-Phase Pipeline</h2>
+
+<div class="phase">
+  <div class="phase-num">PHASE 1</div>
+  <h3>Systematic Baseline</h3>
+  <p>
+    A parametric variation engine generates concrete scenarios by Cartesian product across
+    six dimensions: ego speed (20-100 km/h), target speed, lateral overlap, weather condition,
+    time of day, and road surface. Scenarios are filtered for physical plausibility and executed
+    in SUMO via TraCI. The SUT controller applies AEB logic each timestep; the NCAP evaluator
+    assigns a 0-4 score and a binary <code>label_critical</code> flag.
+  </p>
+  <p>
+    <b>Output:</b> 2,000 labelled scenarios per SUT version, stored in SQLite. Forms the
+    training dataset for Phase 2.
+  </p>
+</div>
+
+<div class="phase">
+  <div class="phase-num">PHASE 2</div>
+  <h3>Smart Test Selection (GBT Criticality Model)</h3>
+  <p>
+    A Gradient Boosted Trees classifier is trained on Phase 1 results to predict failure
+    probability for any scenario parameter combination. Scenarios are then ranked by predicted
+    risk. The SmartSelector applies a coverage guard (at least one scenario per NCAP family)
+    before filling the remaining budget by rank.
+  </p>
+  <p>
+    SHAP feature importance identifies which parameters drive failures, giving engineers a
+    direct root-cause signal alongside the test results.
+  </p>
+  <p>
+    <b>Output:</b> Ranked test suite. 441 scenarios capture 89.8% of all v1 defects.
+    4.5x reduction in simulation cost versus exhaustive sweep.
+  </p>
+</div>
+
+<div class="phase">
+  <div class="phase-num">PHASE 3</div>
+  <h3>Novel Failure Discovery (UCB Bandit + SOTIF)</h3>
+  <p>
+    When a new SUT version ships, the Phase 2 model provides prior knowledge about
+    the previous version. A UCB multi-armed bandit (25 arms: 5 speed buckets x 5 weather
+    conditions) is warm-started from these priors and deployed against the new release.
+  </p>
+  <p>
+    The bandit exploits known failure regions immediately. When those arms stop producing
+    failures (because the bug was fixed), UCB exploration bonus forces the agent toward
+    under-tested arms. A one-shot novelty reward fires on the first failure per arm, preventing
+    over-exploitation of a single region and ensuring genuine exploration.
+  </p>
+  <p>
+    <b>Output:</b> Novel failure arms discovered (unknown-unknowns); learning curve showing
+    cumulative failures over scenarios executed. Directly generates ISO 21448 SOTIF evidence.
+  </p>
+</div>
+
+
+<!-- 3. RESULTS -->
+<h2>3. Results</h2>
+
+<h3>3.1 Phase 1 - Systematic Baseline</h3>
+<table>
+  <thead><tr><th>SUT Version</th><th>Known Defect</th><th>Scenarios</th><th>Failures</th><th>Failure Rate</th><th>Mean NCAP</th></tr></thead>
+  <tbody>
+    <tr><td>v1</td><td>Wet-road braking compensation bug</td><td>2,000</td><td class="fail">491</td><td>24.6%</td><td>3.02</td></tr>
+    <tr><td>v2</td><td>Fog-dense sensor regression (introduced fixing v1)</td><td>2,000</td><td class="fail">293</td><td>14.6%</td><td>3.41</td></tr>
+    <tr><td>v3</td><td>Clean release</td><td>2,000</td><td class="pass">0</td><td>0.0%</td><td>4.00</td></tr>
+  </tbody>
+</table>
+
+<h3>3.2 Phase 2 - Smart Test Selection</h3>
+<table>
+  <thead><tr><th>Approach</th><th>Scenarios Run</th><th>Failures Found</th><th>Defect Coverage</th><th>Note</th></tr></thead>
+  <tbody>
+    <tr><td>Exhaustive sweep</td><td>2,000</td><td>491</td><td>100%</td><td class="note">Baseline</td></tr>
+    <tr><td>NCAP homologation (dry, fixed speeds)</td><td>178</td><td class="fail">0</td><td>0%</td><td class="note">Certifies; does not find bugs</td></tr>
+    <tr><td><b>GBT-smart (AI-ranked)</b></td><td><b>441</b></td><td><b>441</b></td><td class="pass"><b>89.8%</b></td><td class="note">4.5x cheaper than exhaustive</td></tr>
+  </tbody>
+</table>
+
+<img src="charts/scenario_efficiency.png" style="width:100%;border-radius:6px;margin:12px 0;">
+
+<h3>3.3 Phase 3 - Novel Failure Discovery</h3>
+<table>
+  <thead><tr><th>SUT Probed</th><th>GBT Trained On</th><th>Scenarios</th><th>Known Failures</th><th>Novel Arms</th><th>Interpretation</th></tr></thead>
+  <tbody>
+    <tr><td>v1</td><td>v1</td><td>500</td><td>441</td><td>1</td><td class="note">Bandit confirms known wet/snow regions</td></tr>
+    <tr><td>v2</td><td>v1</td><td>500</td><td>61</td><td class="pass"><b>2</b></td><td class="note">Fix confirmed (441 to 61 drop) + fog regression discovered</td></tr>
+    <tr><td>v3</td><td>v2</td><td>300</td><td class="pass">0</td><td class="pass">0</td><td class="note">Clean release - framework correctly silent</td></tr>
+  </tbody>
+</table>
+
+<div class="callout green">
+  <b>Key insight - SOTIF cross-version regression detection</b>
+  The drop from 441 to 61 GBT-known failures (v1 to v2 probe) proves the wet-road bug was fixed.
+  The 2 novel arms prove a fog-dense regression was introduced in v2 - a failure mode that never
+  existed in v1 training data and would not appear in any systematic test plan derived from v1.
+  v3 produces silence. The framework learns to go quiet when there is nothing to find.
+</div>
+
+<img src="charts/bandit_learning.png" style="width:100%;border-radius:6px;margin:12px 0;">
+<img src="charts/regression_story.png" style="width:100%;border-radius:6px;margin:12px 0;">
+
+
+<!-- 4. ARCHITECTURE -->
+<h2>4. Architecture Overview</h2>
+<table>
+  <thead><tr><th>Module</th><th>Responsibility</th><th>Integration Point</th></tr></thead>
+  <tbody>
+    <tr><td>VariationEngine</td><td>Cartesian product scenario generation with implausibility filter</td><td>Config YAML</td></tr>
+    <tr><td>SumoWriter</td><td>Generates .net.xml and .rou.xml per scenario</td><td>OpenSCENARIO export path ready</td></tr>
+    <tr><td>SUMORunner</td><td>TraCI batch loop, idempotent (skips existing results)</td><td>Replace SUMO with CarMaker / CARLA</td></tr>
+    <tr><td>SUTController</td><td>AEB logic per timestep; FMI 2.0 integration seam</td><td><b>Override step() for real V-ECU</b></td></tr>
+    <tr><td>NCAPEvaluator</td><td>0-4 NCAP points + label_critical per scenario</td><td>Extend for R157 / custom regulations</td></tr>
+    <tr><td>CriticalityModel</td><td>GBT classifier + SHAP importance</td><td>Swap for XGBoost / neural surrogate</td></tr>
+    <tr><td>SmartSelector</td><td>Coverage guard + top-K exploitation + diversity fill</td><td>Tune budget per programme gate</td></tr>
+    <tr><td>BanditAgent</td><td>UCB warm-started from GBT; one-shot novelty reward</td><td>Extend with BO within each arm (Phase 4)</td></tr>
+  </tbody>
+</table>
+
+<div class="callout orange">
+  <b>Simulator agnostic by design</b>
+  The SUMORunner and SUTController interfaces are designed for drop-in replacement.
+  SUMO is used in this POC for its open-source TraCI interface. A production deployment
+  would connect to CarMaker, VEOS, or CARLA without changes to the ML layer.
+</div>
+
+
+<!-- 5. LIMITATIONS -->
+<h2>5. Known Limitations</h2>
+<table class="lim-table">
+  <thead><tr><th>Area</th><th>Current State</th><th>Production Path</th></tr></thead>
+  <tbody>
+    <tr><td>Weather physics</td><td>Friction multiplier applied manually in SUT controller</td><td>Connect to sensor simulation layer (dSPACE AURELION, AVL)</td></tr>
+    <tr><td>SUT model</td><td>Parametric rule-based; not a real ECU</td><td>FMI 2.0 co-simulation with V-ECU (interface pre-wired)</td></tr>
+    <tr><td>Bandit resolution</td><td>25 discrete arms; finds region, not exact threshold</td><td>Bayesian Optimisation within each arm (Phase 4)</td></tr>
+    <tr><td>Traffic model</td><td>Ego + single target on straight 500m road</td><td>Cut-ins, density, curved road via SUMO network generator</td></tr>
+    <tr><td>Sensor model</td><td>Ground-truth distance/speed from TraCI, no noise</td><td>Sensor simulation integration</td></tr>
+    <tr><td>HIL validation</td><td>SIL only; FMI 2.0 port untested on hardware</td><td>Test bench integration</td></tr>
+    <tr><td>NCAP scoring</td><td>Simplified; partial credit and full VRU not complete</td><td>Full protocol implementation</td></tr>
+  </tbody>
+</table>
+
+
+<!-- 6. ROADMAP -->
+<h2>6. Roadmap</h2>
+<table>
+  <thead><tr><th>Phase</th><th>Capability</th><th>Value</th></tr></thead>
+  <tbody>
+    <tr><td>v1 (this POC)</td><td>Weather-based parameter space, discrete arms, SUMO SIL</td><td>Pipeline architecture validated, methodology proven</td></tr>
+    <tr><td>v2</td><td>Kinematic parameter space (decel profiles, cut-ins, curvature), BO within arms</td><td>Real physics, exact failure thresholds, no synthetic weather proxy</td></tr>
+    <tr><td>v3</td><td>FMI 2.0 real V-ECU, sensor simulation backend, HIL validation</td><td>Production-grade integration, full ISO 26262 / 21448 artefact chain</td></tr>
+    <tr><td>v4</td><td>L3/L4 multi-agent parameter space, learned world model for exploration</td><td>20-30 dimensional ODD coverage - the problem brute force cannot solve</td></tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <b>Scalability note - L3/L4</b>
+  At L2, intelligent selection saves 4.5x over brute force. At L3/L4, with 20-30 dimensional
+  parameter spaces, brute force is not a slower baseline - it is not a viable option. A learned
+  exploration model stops being an optimisation and becomes the only credible approach to
+  demonstrating SOTIF coverage at scale.
+</div>
+
+
+<!-- 7. CONCLUSION -->
+<h2>7. Conclusion</h2>
+<p>
+  This POC demonstrates a three-phase AI-augmented validation pipeline that addresses two
+  structural gaps in current ADAS test practice: simulation budget efficiency and SOTIF
+  unknown-unknown coverage.
+</p>
+<p>
+  Phase 2 reduces the regression test suite from 2,000 to 441 scenarios while maintaining
+  89.8% defect coverage - a 4.5x cost reduction achieved without dropping any NCAP family
+  from the test plan.
+</p>
+<p>
+  Phase 3 detects the fog-dense regression in SUT v2 within 500 adaptive scenarios, despite
+  that failure mode being entirely absent from the v1 training data. The same agent correctly
+  produces no findings on the clean v3 release.
+</p>
+<p>
+  The architecture is simulator-agnostic and SUT-agnostic by design. The ML layer does not
+  change when the simulation backend or the ECU under test changes. That separation is the
+  foundation for extending this methodology from L2 AEB to L3/L4 validation programmes,
+  where intelligent exploration is not an optimisation but a requirement.
+</p>
+
+<div class="callout green">
+  <b>Repository</b>
+  github.com/Sree495/ADAS_Intelligent_ScenarioGen2 &nbsp;|&nbsp;
+  Open an issue to discuss integration or methodology.
+</div>
+
+</div><!-- end body -->
+
+<footer>
+  <span>ADAS Intelligent Scenario Validation - Technical Note v1.0 - April 2026</span>
+  <span>Euro NCAP 2026 definitions used under public regulation. SUMO under EPL 2.0. Core ML pipeline proprietary.</span>
+</footer>
+
+</body>
+</html>
